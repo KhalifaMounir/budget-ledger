@@ -2,7 +2,7 @@ This is a [Next.js](https://nextjs.org) project bootstrapped with [`create-next-
 
 ## Getting Started
 
-First, run the development server:
+Run the development server:
 
 ```bash
 npm run dev
@@ -28,6 +28,38 @@ To learn more about Next.js, take a look at the following resources:
 You can check out [the Next.js GitHub repository](https://github.com/vercel/next.js) - your feedback and contributions are welcome!
 
 ## Deploy on Vercel
+## Pocket Ledger
+
+Private, offline-first personal budget tracking. Every installation is independent: reads and writes go to IndexedDB first and no account is required.
+
+## Structure
+
+```text
+src/
+	app/                  App Router routes and global styles
+	components/           Responsive shell, views, forms, and UI primitives
+	lib/
+		db.ts               Dexie schema and database singleton
+		store.ts            Zustand state and optimistic local mutations
+		sync.ts             Future Supabase sync adapter boundary
+		types.ts            Local domain contracts and export format
+		utils.ts            Formatting and shared helpers
+public/
+	manifest.webmanifest Install metadata
+	icon.svg             Maskable app icon
+```
+
+## Local-first architecture
+
+- Dexie is the source of truth for transactions, categories, budgets, and settings.
+- Zustand hydrates once from Dexie and updates the UI immediately after local writes.
+- Export/import uses a versioned JSON payload so future migrations can be explicit.
+- `src/lib/sync.ts` is the seam for a future Supabase adapter and client-side encryption layer.
+- `next-pwa` generates and registers the service worker during production builds.
+
+## Next steps
+
+The current interface is a complete local V1. Supabase credentials should only be introduced when the sync-key and encryption protocol is defined; local functionality does not depend on them.
 
 The easiest way to deploy your Next.js app is to use the [Vercel Platform](https://vercel.com/new?utm_medium=default-template&filter=next.js&utm_source=create-next-app&utm_campaign=create-next-app-readme) from the creators of Next.js.
 

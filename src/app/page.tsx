@@ -1,7 +1,5 @@
+import { BudgetApp } from "@/components/budget-app";
+
 export default function Home() {
-  return (
-    <main>
-      <div>Hello world!</div>
-    </main>
-  );
+  return <BudgetApp view="overview" />;
 }

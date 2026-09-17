@@ -1,1 +1,13 @@
 @import "tailwindcss";
+
+:root {
+	--background: #f7f5f0;
+	--foreground: #282725;
+}
+
+* { box-sizing: border-box; }
+html { background: var(--background); }
+body { margin: 0; background: var(--background); color: var(--foreground); font-family: "Trebuchet MS", "Segoe UI", sans-serif; }
+.font-display { font-family: Georgia, "Times New Roman", serif; }
+button, input, select { font: inherit; }
+button { cursor: pointer; }
