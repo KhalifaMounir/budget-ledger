@@ -1,12 +1,22 @@
 import type { ExportPayload } from "./types";
+import { supabase } from "./supabase";
 
-/** Future sync boundary: local mutations can be queued here without coupling UI to Supabase. */
+/** Full-vault sync keeps the local database authoritative while providing a simple multi-device bridge. */
 export interface SyncAdapter {
-  push(payload: ExportPayload): Promise<void>;
-  pull(): Promise<ExportPayload | null>;
+  push(syncKey: string, payload: ExportPayload): Promise<void>;
+  pull(syncKey: string): Promise<ExportPayload | null>;
 }
 
-export const offlineSyncAdapter: SyncAdapter = {
-  async push() {},
-  async pull() { return null; },
+export const supabaseSyncAdapter: SyncAdapter = {
+  async push(syncKey, payload) {
+    if (!supabase) throw new Error("Supabase is not configured");
+    const { error } = await supabase.from("ledger_vaults").upsert({ sync_key: syncKey, payload, updated_at: new Date().toISOString() });
+    if (error) throw error;
+  },
+  async pull(syncKey) {
+    if (!supabase) throw new Error("Supabase is not configured");
+    const { data, error } = await supabase.from("ledger_vaults").select("payload").eq("sync_key", syncKey).maybeSingle();
+    if (error) throw error;
+    return (data?.payload as ExportPayload | undefined) ?? null;
+  },
 };

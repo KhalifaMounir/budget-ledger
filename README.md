@@ -58,6 +58,15 @@ public/
 - `src/lib/sync.ts` is the seam for a future Supabase adapter and client-side encryption layer.
 - `next-pwa` generates and registers the service worker during production builds.
 
+## Cross-device sync
+
+1. Create a Supabase project and run `supabase/schema.sql` in the SQL editor.
+2. Add `NEXT_PUBLIC_SUPABASE_URL` and `NEXT_PUBLIC_SUPABASE_ANON_KEY` to Vercel and local `.env.local`.
+3. Open the cloud icon in Pocket Ledger on each device, enter the same private sync key, and choose `Save & push` on the source device.
+4. Use `Refresh` on the other device to pull the shared vault into its local IndexedDB.
+
+Sync is opt-in. The app remains usable offline when Supabase is unavailable; the sync key is the vault identifier, so keep it private.
+
 ## Next steps
 
 The current interface is a complete local V1. Supabase credentials should only be introduced when the sync-key and encryption protocol is defined; local functionality does not depend on them.

@@ -30,7 +30,7 @@ export interface Budget {
   createdAt: string;
 }
 
-export type SettingKey = "theme" | "biometricEnabled" | "currency";
+export type SettingKey = "theme" | "biometricEnabled" | "biometricCredential" | "currency" | "syncKey";
 export interface Setting {
   key: SettingKey;
   value: string;

@@ -2,10 +2,11 @@
 
 import Link from "next/link";
 import { usePathname } from "next/navigation";
-import { BookOpen, CalendarDays, CircleDollarSign, LayoutDashboard, Settings, Tags } from "lucide-react";
+import { BookOpen, CalendarDays, CircleDollarSign, LayoutDashboard, RefreshCw, Settings, Tags } from "lucide-react";
 import { cn } from "@/lib/utils";
 import { useBudgetStore } from "@/lib/store";
 import { Select } from "./ui";
+import { SyncTools } from "./sync-tools";
 
 const nav = [
   { href: "/", label: "Overview", icon: LayoutDashboard },
@@ -22,10 +23,15 @@ export function AppShell({ children }: { children: React.ReactNode }) {
       <nav className="space-y-1">{nav.map(({ href, label, icon: Icon }) => <Link key={href} href={href} className={cn("flex items-center gap-3 rounded-xl px-3 py-3 text-sm font-medium text-[#6c6a63] transition hover:bg-black/5 dark:text-[#bdbab1] dark:hover:bg-white/5", pathname === href && "bg-white text-[#282725] shadow-sm dark:bg-white/10 dark:text-white")}><Icon className="h-4 w-4" />{label}</Link>)}</nav>
       <div className="absolute bottom-7 left-5 right-5"><CurrencySwitcher /><Link href="/settings" className={cn("mt-3 flex items-center gap-3 rounded-xl px-3 py-3 text-sm font-medium text-[#6c6a63] dark:text-[#bdbab1]", pathname === "/settings" && "bg-white text-[#282725] shadow-sm dark:bg-white/10 dark:text-white")}><Settings className="h-4 w-4" />Settings</Link><div className="mt-5 flex items-center gap-2 border-t border-black/5 pt-5 text-xs text-[#858178] dark:border-white/5"><CircleDollarSign className="h-4 w-4" />Private & offline</div></div>
     </aside>
-    <main className="pb-24 lg:ml-64 lg:pb-0">{children}</main>
+    <main className="pb-24 lg:ml-64 lg:pb-0"><div className="fixed right-4 top-4 z-20 flex gap-2"><RefreshButton /><SyncTools /></div>{children}</main>
     <div className="fixed bottom-[5.5rem] right-3 z-20 w-44 lg:hidden"><CurrencySwitcher /></div>
     <nav className="fixed inset-x-0 bottom-0 z-20 grid grid-cols-5 border-t border-black/10 bg-[#f7f5f0]/95 px-2 py-2 backdrop-blur dark:border-white/10 dark:bg-[#171715]/95 lg:hidden">{[...nav, { href: "/settings", label: "Settings", icon: Settings }].map(({ href, label, icon: Icon }) => <Link key={href} href={href} className={cn("flex flex-col items-center gap-1 rounded-xl py-2 text-[10px] font-medium text-[#858178]", pathname === href && "bg-[#e07a5f]/10 text-[#c96850]")}><Icon className="h-5 w-5" />{label}</Link>)}</nav>
   </div>;
+}
+
+function RefreshButton() {
+  const { refreshFromCloud, syncing } = useBudgetStore();
+  return <button title="Refresh from cloud" aria-label="Refresh from cloud" onClick={() => void refreshFromCloud()} className="grid h-10 w-10 place-items-center rounded-xl border border-black/10 bg-[#f7f5f0]/90 text-[#6c6a63] shadow-sm backdrop-blur hover:text-[#e07a5f] dark:border-white/10 dark:bg-[#1e1e1c]/90 dark:text-[#bdbab1]"><RefreshCw className={`h-4 w-4 ${syncing ? "animate-spin" : ""}`} /></button>;
 }
 
 export function CurrencySwitcher() {
