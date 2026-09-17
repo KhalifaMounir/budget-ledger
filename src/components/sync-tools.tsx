@@ -4,11 +4,8 @@ import { useState } from "react";
 import { Cloud, DownloadCloud, KeyRound, LockKeyhole, RefreshCw, UploadCloud } from "lucide-react";
 import { useBudgetStore } from "@/lib/store";
 import { hasSupabaseConfig } from "@/lib/supabase";
+import { registerBiometric } from "@/lib/biometric";
 import { Button, Input } from "./ui";
-
-function toBase64(value: ArrayBuffer) {
-  return btoa(String.fromCharCode(...new Uint8Array(value)));
-}
 
 export function SyncTools() {
   const { settings, setSetting, refreshFromCloud, pushToCloud, syncing, syncError } = useBudgetStore();
@@ -16,12 +13,6 @@ export function SyncTools() {
   const [syncKey, setSyncKey] = useState(settings.find((item) => item.key === "syncKey")?.value ?? "");
   const [message, setMessage] = useState("");
   const biometric = settings.find((item) => item.key === "biometricEnabled")?.value === "true";
-
-  async function registerBiometric() {
-    if (!window.PublicKeyCredential || !navigator.credentials) throw new Error("WebAuthn is not supported on this device");
-    const credential = await navigator.credentials.create({ publicKey: { challenge: crypto.getRandomValues(new Uint8Array(32)), rp: { name: "Pocket Ledger" }, user: { id: crypto.getRandomValues(new Uint8Array(16)), name: "local-user", displayName: "Pocket Ledger user" }, pubKeyCredParams: [{ alg: -7, type: "public-key" }], authenticatorSelection: { userVerification: "required" }, timeout: 60000 } });
-    if (credential) { await setSetting("biometricCredential", toBase64((credential as PublicKeyCredential).rawId)); await setSetting("biometricEnabled", "true"); }
-  }
 
   async function connectAndPull() {
     const normalized = syncKey.trim();

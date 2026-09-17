@@ -1,13 +1,33 @@
 @import "tailwindcss";
 
 :root {
-	--background: #f7f5f0;
-	--foreground: #282725;
+	--background: #f5f5f7;
+	--foreground: #1c1c1e;
+	--muted: #8e8e93;
+	--surface: rgba(255, 255, 255, 0.72);
+	--ios-blue: #007aff;
 }
 
 * { box-sizing: border-box; }
-html { background: var(--background); }
-body { margin: 0; background: var(--background); color: var(--foreground); font-family: "Trebuchet MS", "Segoe UI", sans-serif; }
-.font-display { font-family: Georgia, "Times New Roman", serif; }
+html { background: var(--background); color-scheme: light; }
+html.dark { background: #000; color-scheme: dark; }
+body {
+	margin: 0;
+	min-width: 320px;
+	background: var(--background);
+	color: var(--foreground);
+	font-family: -apple-system, BlinkMacSystemFont, "SF Pro Text", "SF Pro Display", "Helvetica Neue", sans-serif;
+	-webkit-font-smoothing: antialiased;
+	text-rendering: optimizeLegibility;
+}
+.dark body { background: #000; }
+.font-display { font-family: -apple-system, BlinkMacSystemFont, "SF Pro Display", "Helvetica Neue", sans-serif; }
 button, input, select { font: inherit; }
-button { cursor: pointer; }
+button { cursor: pointer; -webkit-tap-highlight-color: transparent; }
+input, select { font-size: 16px; }
+::selection { background: rgb(0 122 255 / 0.2); }
+
+@media (prefers-reduced-motion: no-preference) {
+	button, a { transition: transform 180ms ease, background-color 180ms ease, color 180ms ease, box-shadow 180ms ease, opacity 180ms ease; }
+	button:active, a:active { transform: scale(0.97); }
+}
